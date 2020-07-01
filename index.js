@@ -3,8 +3,20 @@ const cheerio = require('cheerio')
 
 const { cleanRows, createArrayOfArrays, fillArray, convertArrayToObject } = require('./functions')
 
+axios.interceptors.request.use((request) => {
+  console.log("Starting Request", request);
+  return request;
+});
+
+axios.interceptors.response.use((response) => {
+  console.log("Response:", response);
+  return response;
+});
+
+axios.defaults.headers.get['User-Agent'] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36";
+
 async function socialblade (username) {
-  const html = await axios(`https://socialblade.com/twitter/user/${username}/monthly`)
+  const html = await axios(`https://socialblade.com/instagram/user/${username}/monthly`);
   const $ = cheerio.load(html.data)
   const table = $('#socialblade-user-content > div:nth-child(5)').text()
   const tableRows = cleanRows(table.split('\n'))
